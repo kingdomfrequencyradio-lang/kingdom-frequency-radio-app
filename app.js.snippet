@@ -1,0 +1,6 @@
+const songTitle=document.getElementById("songTitle");
+const artistName=document.getElementById("artistName");
+const metadataUrl="https://api.zeno.fm/mounts/metadata/subscribe/6x0bwezlk70tv";
+let metadataConnection;
+function connectMetadata(){metadataConnection=new EventSource(metadataUrl);metadataConnection.onmessage=function(event){try{const data=JSON.parse(event.data);const streamTitle=data.streamTitle||data.title||data.song||"";if(!streamTitle){songTitle.textContent="Live Programming";artistName.textContent="Kingdom Frequency Radio™";return;}const parts=streamTitle.split(" - ");if(parts.length>=2){artistName.textContent=parts.shift().trim();songTitle.textContent=parts.join(" - ").trim();}else{songTitle.textContent=streamTitle;artistName.textContent="Kingdom Frequency Radio™";}}catch(e){console.error(e);}};metadataConnection.onerror=function(){songTitle.textContent="Live Programming";artistName.textContent="Kingdom Frequency Radio™";metadataConnection.close();setTimeout(connectMetadata,10000);};}
+connectMetadata();
