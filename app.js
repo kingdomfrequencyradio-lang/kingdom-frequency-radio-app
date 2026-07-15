@@ -159,6 +159,49 @@ function connectMetadata() {
 
 connectMetadata();
 
+/* GOOGLE ANALYTICS EVENT TRACKING */
+
+function trackEvent(eventName, parameters = {}) {
+  if (typeof gtag === 'function') {
+    gtag('event', eventName, parameters);
+  }
+}
+
+/* Track radio playback */
+radio.addEventListener('play', () => {
+  trackEvent('radio_play', {
+    station_name: 'Kingdom Frequency Radio'
+  });
+});
+
+radio.addEventListener('pause', () => {
+  trackEvent('radio_pause', {
+    station_name: 'Kingdom Frequency Radio'
+  });
+});
+
+/* Track app sharing */
+shareButton.addEventListener('click', () => {
+  trackEvent('share_app');
+});
+
+/* Track app installation prompt */
+installButton.addEventListener('click', () => {
+  trackEvent('install_button_click');
+});
+
+/* Track ministry and social links */
+document.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    const destination = link.textContent.trim().toLowerCase();
+
+    trackEvent('outbound_link_click', {
+      link_name: destination,
+      link_url: link.href
+    });
+  });
+});
+
 /* SERVICE WORKER */
 
 if ('serviceWorker' in navigator) {
