@@ -77,45 +77,65 @@ function showSongTitle(value) {
     cleanedTitle || 'Live Programming';
 }
 
-function readMetadata(data) {
-  const title =
-    data.streamTitle ||
-    data.title ||
-    data.song ||
-    data.nowPlaying ||
-    '';
+async function refreshMetadata() {
+  if (!songTitle) return;
 
-  showSongTitle(title);
-}
+  const controller = new AbortController();
 
-function connectMetadata() {
-  if (!songTitle || typeof EventSource === 'undefined') {
-    return;
+  try {
+    const response = await fetch(metadataUrl, {
+      cache: 'no-store',
+      signal: controller.signal
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error('Metadata request failed');
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let text = '';
+    let found = false;
+
+    while (!found) {
+      const { value, done } = await reader.read();
+
+      if (done) break;
+
+      text += decoder.decode(value, { stream: true });
+
+      const lines = text.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data:')) {
+          const jsonText = line.substring(5).trim();
+
+          if (jsonText) {
+            const data = JSON.parse(jsonText);
+
+            if (data.streamTitle) {
+              showSongTitle(data.streamTitle);
+              found = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error('Metadata error:', error);
+    }
+  } finally {
+    controller.abort();
   }
 
-  metadataConnection = new EventSource(metadataUrl);
-
-  metadataConnection.onmessage = event => {
-    try {
-      const data = JSON.parse(event.data);
-      readMetadata(data);
-    } catch (error) {
-      console.error('Metadata could not be read:', error);
-    }
-  };
-
-  metadataConnection.onerror = () => {
-    showSongTitle('Live Programming');
-
-    if (metadataConnection) {
-      metadataConnection.close();
-    }
-
-    setTimeout(connectMetadata, 10000);
-  };
+  setTimeout(refreshMetadata, 15000);
 }
 
-connectMetadata();
+refreshMetadata();
 
 /* GOOGLE ANALYTICS EVENT TRACKING */
 
