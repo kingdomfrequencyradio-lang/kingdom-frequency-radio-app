@@ -78,22 +78,6 @@ shareButton.addEventListener('click', async () => {
   }
 });
 
-window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault();
-  deferredPrompt = event;
-  installButton.hidden = false;
-});
-
-installButton.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-
-  deferredPrompt = null;
-  installButton.hidden = true;
-});
-
 const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
 const isStandalone =
