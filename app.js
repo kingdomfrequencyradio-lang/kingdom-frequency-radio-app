@@ -57,27 +57,6 @@ volume.addEventListener('input', () => {
   radio.volume = Number(volume.value);
 });
 
-shareButton.addEventListener('click', async () => {
-  const shareData = {
-    title: 'Kingdom Frequency Radio™',
-    text: 'Listen live to Kingdom Frequency Radio™ — Tuned to Truth. Powered by the Word.',
-    url: location.href
-  };
-
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(location.href);
-      statusText.textContent = 'App link copied';
-    }
-  } catch (error) {
-    if (error.name !== 'AbortError') {
-      console.error(error);
-    }
-  }
-});
-
 const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
 const isStandalone =
