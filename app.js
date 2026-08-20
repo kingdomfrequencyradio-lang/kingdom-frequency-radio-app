@@ -100,11 +100,6 @@ const isStandalone =
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone;
 
-if (isIos && !isStandalone) {
-  installHelp.innerHTML =
-    'On iPhone, tap the <strong>Share</strong> button in Safari, then choose <strong>Add to Home Screen</strong>.';
-}
-
 /* NOW PLAYING METADATA */
 
 const metadataUrl =
