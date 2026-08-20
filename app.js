@@ -3,7 +3,6 @@ const playButton = document.getElementById('playButton');
 const playIcon = document.getElementById('playIcon');
 const playText = document.getElementById('playText');
 const statusText = document.getElementById('statusText');
-const volume = document.getElementById('volume');
 const shareButton = document.getElementById('shareButton');
 const installButton = document.getElementById('installButton');
 const installHelp = document.getElementById('installHelp');
@@ -11,8 +10,6 @@ const songTitle = document.getElementById('songTitle');
 
 let deferredPrompt = null;
 let metadataConnection = null;
-
-radio.volume = Number(volume.value);
 
 function setPlayerState(isPlaying) {
   playIcon.textContent = isPlaying ? '❚❚' : '▶';
@@ -51,10 +48,6 @@ radio.addEventListener('waiting', () => {
 
 radio.addEventListener('error', () => {
   statusText.textContent = 'Stream unavailable. Please try again.';
-});
-
-volume.addEventListener('input', () => {
-  radio.volume = Number(volume.value);
 });
 
 const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
