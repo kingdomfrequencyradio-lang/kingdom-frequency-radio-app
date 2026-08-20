@@ -181,14 +181,18 @@ radio.addEventListener('pause', () => {
 });
 
 /* Track app sharing */
-shareButton.addEventListener('click', () => {
-  trackEvent('share_app');
-});
+if (shareButton) {
+    shareButton.addEventListener('click', () => {
+        trackEvent('share_app');
+    });
+}
 
 /* Track app installation prompt */
-installButton.addEventListener('click', () => {
-  trackEvent('install_button_click');
-});
+if (installButton) {
+    installButton.addEventListener('click', () => {
+        trackEvent('install_button_click');
+    });
+}
 
 /* Track ministry and social links */
 document.querySelectorAll('a').forEach(link => {
